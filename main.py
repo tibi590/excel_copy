@@ -1,11 +1,8 @@
+from math import comb
 import ttkbootstrap as ttk
 from screeninfo import get_monitors
-from xlrd import colname
 
 from db import open_file
-
-tabnum = 1
-tabs = []
 
 class Tab():
     tab_name = "" 
@@ -44,6 +41,24 @@ class Tab():
         for person in full_data:
             table.insert(parent="", index=ttk.END, values=person)
 
+    def init_filter(self):
+        print("filter init")
+        filter_frame = self.widgets["filter_frame"]
+        filter_frame_width = int(WIDTH*0.2)
+        filter_frame_height = int(HEIGHT*0.6)
+
+        item_frame = ttk.Frame(filter_frame, width=filter_frame_width*0.8, height=filter_frame_height*0.7, padding=10)       
+
+        test_label = ttk.Label(item_frame, text="item")
+        close_button = ttk.Button(self.widgets["filter_frame"], width=int(filter_frame_width*0.5))
+        apply_button = ttk.Button(filter_frame, width=int(filter_frame_width*0.5))
+
+        filter_frame.place(relx=0.4, rely=0.2)
+
+        test_label.pack()
+        close_button.place(anchor="sw")
+        apply_button.place(anchor="se")
+
 def get_primary_geometry():
     for monitor in get_monitors():
         if monitor.is_primary:
@@ -70,19 +85,19 @@ def filter_data():
     pass
 
 def new_tab():
-    width, height = get_primary_geometry()
+    table_frame_width = int(WIDTH*0.8)
+    option_frame_width = int(WIDTH*0.2)
+    filter_frame_width = int(WIDTH*0.2)
 
-    table_frame_width = int(width*0.8)
-    filter_frame_width = int(width*0.2)
+    filter_frame_height = int(HEIGHT*0.6)
 
+    frame = ttk.Frame(notebook, width=WIDTH, height=HEIGHT)
+    table_frame = ttk.Frame(frame, width=table_frame_width, height=HEIGHT)
+    option_frame = ttk.Frame(frame, width=option_frame_width, height=HEIGHT)
+    filter_frame = ttk.Frame(frame, width=filter_frame_width, height=filter_frame_height)
 
-    frame = ttk.Frame(notebook, width=screen_width, height=screen_height)
-    table_frame = ttk.Frame(frame, width=table_frame_width, height=height)
-    filter_frame = ttk.Frame(frame, width=filter_frame_width, height=height)
-
-    filter_entry = ttk.Entry(filter_frame)
-    apply_button = ttk.Button(filter_frame, text="Filter", width=filter_frame_width-5)
-    delete_button = ttk.Button(filter_frame, text="Delete Table", width=filter_frame_width-5, command= delete_tab)
+    filter_button = ttk.Button(option_frame, text="Filter", width=option_frame_width-5, command= lambda: tabs[notebook.index("current")].init_filter())
+    delete_button = ttk.Button(option_frame, text="Delete Table", width=option_frame_width-5, command= delete_tab)
 
     scrollx = ttk.Scrollbar(table_frame, orient="horizontal")
     scrolly = ttk.Scrollbar(table_frame, orient="vertical")
@@ -94,28 +109,28 @@ def new_tab():
 
     frame.pack_propagate(False)
     table_frame.pack_propagate(False)
+    option_frame.pack_propagate(False)
     filter_frame.pack_propagate(False)
 
     frame.pack(side="left", fill="both")
     table_frame.pack(side="left", fill="y")
-    filter_frame.pack(side="bottom", fill="x")
+    option_frame.pack(side="bottom", fill="x")
 
     scrollx.pack(side="bottom", fill="x")
     scrolly.pack(side="right", fill="y")
     table.pack(side="left", fill="both", expand=True)
-    filter_entry.pack() 
     delete_button.pack(side="bottom")
-    apply_button.pack(side="bottom")
+    filter_button.pack(side="top")
 
     widgets = {
             "frame": frame,
             "table_frame": table_frame,
+            "option_frame": option_frame,
             "filter_frame": filter_frame,
             "scrollx": scrollx,
             "scrolly": scrolly,
             "table": table,
-            "filter_entry": filter_entry,
-            "apply_button": apply_button,
+            "filter_button": filter_button,
             "delete_button": delete_button
             }
     notebook.add(frame, text="New tab")
@@ -130,11 +145,13 @@ def new_tab():
 
     tab.load_table(file_name, headers, full_data)
 
+tabnum = 1
+tabs = []
+WIDTH, HEIGHT = get_primary_geometry()
+
+
 if __name__ == "__main__":
-    window = ttk.Window("Excel application", "darkly")
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    window.geometry(f"{screen_width}x{screen_height}")
+    window = ttk.Window("Excel application", "darkly", size=(WIDTH, HEIGHT))
 
     menu = ttk.Menu(window)
     file_menu = ttk.Menu(menu, tearoff=False)
