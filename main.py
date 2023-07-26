@@ -1,4 +1,3 @@
-from math import comb
 import ttkbootstrap as ttk
 from screeninfo import get_monitors
 
@@ -85,15 +84,18 @@ def filter_data():
     pass
 
 def new_tab():
-    table_frame_width = int(WIDTH*0.8)
-    option_frame_width = int(WIDTH*0.2)
-    filter_frame_width = int(WIDTH*0.2)
+    width = window.winfo_width()
+    height = window.winfo_height()
 
-    filter_frame_height = int(HEIGHT*0.6)
+    table_frame_width = int(width*0.8)
+    option_frame_width = int(width*0.2)
+    filter_frame_width = int(width*0.2)
 
-    frame = ttk.Frame(notebook, width=WIDTH, height=HEIGHT)
-    table_frame = ttk.Frame(frame, width=table_frame_width, height=HEIGHT)
-    option_frame = ttk.Frame(frame, width=option_frame_width, height=HEIGHT)
+    filter_frame_height = int(height*0.6)
+
+    frame = ttk.Frame(notebook, width=width, height=height)
+    table_frame = ttk.Frame(frame, width=table_frame_width, height=height)
+    option_frame = ttk.Frame(frame, width=option_frame_width, height=height)
     filter_frame = ttk.Frame(frame, width=filter_frame_width, height=filter_frame_height)
 
     filter_button = ttk.Button(option_frame, text="Filter", width=option_frame_width-5, command= lambda: tabs[notebook.index("current")].init_filter())
@@ -118,7 +120,7 @@ def new_tab():
 
     scrollx.pack(side="bottom", fill="x")
     scrolly.pack(side="right", fill="y")
-    table.pack(side="left", fill="both", expand=True)
+    table.pack(side="left", fill="both")
     delete_button.pack(side="bottom")
     filter_button.pack(side="top")
 
@@ -149,7 +151,6 @@ tabnum = 1
 tabs = []
 WIDTH, HEIGHT = get_primary_geometry()
 
-
 if __name__ == "__main__":
     window = ttk.Window("Excel application", "darkly", size=(WIDTH, HEIGHT))
 
@@ -164,7 +165,7 @@ if __name__ == "__main__":
 
     notebook = ttk.Notebook(window)
     new_tab()
-    notebook.pack()
+    notebook.pack(fill="both", expand=True)
 
     window.bind("<Delete>", lambda _: delete_tab())
     window.bind("<Control-KeyPress-n>", lambda _: new_tab())

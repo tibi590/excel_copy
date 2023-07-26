@@ -1,26 +1,30 @@
-import xlrd
 from tkinter import filedialog as fd
+
+import openpyxl
 
 def open_file():
     file_path = fd.askopenfilename(
             title="Select file",
             filetypes=[("Excel files", "*.xlsx")]
             )
-    work_book = xlrd.open_workbook(file_path)
-    sheet = work_book.sheet_by_index(0)
+
+    work_book = openpyxl.load_workbook(file_path)
+    sheet_obj = work_book.active
 
     file_name = file_path.split("/")[-1]
-    headers = [str(cell.value) for cell in sheet.row(0)]
-    people = []
+    headers = [cell.value for cell in sheet_obj[1]]
+    full_data = []
 
-    for row in range(sheet.nrows)[1:]:
-        person = []
-        for cell in sheet.row(row):
-            try:
-                person.append(int(cell.value))
-            except ValueError:
-                person.append(str(cell.value))
+    for row in range(sheet_obj.max_row)[2:]:
+        row_data = [cell.value for cell in sheet_obj[row]] 
 
-        people.append(person)
+        if not is_empty_list(row_data):
+            full_data.append(row_data)
 
-    return (file_name, headers, people)
+    return (file_name, headers, full_data)
+
+def is_empty_list(lst):
+    for e in lst:
+        if e:
+            return False
+    return True
