@@ -18,7 +18,7 @@ def open_file():
     for row in range(sheet_obj.max_row)[2:]:
         row_data = [cell.value for cell in sheet_obj[row]] 
 
-        if not is_empty_list(row_data):
+        if is_empty_list(row_data):
             full_data.append(row_data)
 
     return (file_name, headers, full_data)
