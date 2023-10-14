@@ -1,27 +1,38 @@
 from ttkbootstrap import Style
 from tkinter import ttk
 
+STYLE = Style(theme="superhero")
+WINDOW = STYLE.master
+NOTEBOOK = ttk.Notebook(WINDOW)
+NOTEBOOK.pack(fill="both")
+
 class App:
     width = None
     height = None
     title = ""
-    colortheme = "" 
 
-    def __init__(self, title="App", colortheme="flatly"):
-        self.style = Style(theme=colortheme)
-        self.window = self.style.master
-
+    def __init__(self, title="App"):
         self.title = title
-        self.colortheme = colortheme
 
-        self.width = self.window.winfo_screenwidth()
-        self.height = self.window.winfo_screenheight()
+        self.width = WINDOW.winfo_screenwidth()
+        self.height = WINDOW.winfo_screenheight()
 
-        self.window.geometry("%dx%d" % (self.width, self.height))
+        WINDOW.geometry("%dx%d" % (self.width, self.height))
         self.start_app()
 
     def start_app(self):
+        Tab()
 
-        ttk.Button(self.window, text="Button", style="succes.TButton").pack(side="left", padx=5, pady=10)
+        WINDOW.mainloop()
 
-        self.window.mainloop()
+class Tab:
+    widgets = {}
+
+    def __init__(self):
+        self.widgets["main_frame"] = ttk.Frame(NOTEBOOK)
+
+        self.widgets["main_frame"].pack(fill="both")
+
+        title = f"Tab {len(self.widgets.keys())}"
+
+        NOTEBOOK.add(self.widgets["main_frame"], text=title)
