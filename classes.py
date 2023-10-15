@@ -40,8 +40,14 @@ class Tab:
         self.widgets["table_frame"] = ttk.Frame(self.widgets["main_frame"], width=WIDTH*0.8, height=HEIGHT)
         self.widgets["option_frame"] = ttk.Frame(self.widgets["main_frame"], width=WIDTH*0.2, height=HEIGHT)
 
+        self.widgets["table_label"] = ttk.Label(self.widgets["table_frame"], background="red")
+        self.widgets["option_label"] = ttk.Label(self.widgets["option_frame"], background="blue")
+
         self.widgets["main_frame"].pack(fill="both")
         self.widgets["table_frame"].pack()
         self.widgets["option_frame"].pack()
+
+        self.widgets["table_label"].pack(fill="both")
+        self.widgets["option_label"].pack(fill="both")
 
         NOTEBOOK.add(self.widgets["main_frame"], text=title)
