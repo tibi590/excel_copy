@@ -1,38 +1,47 @@
-from ttkbootstrap import Style
+from ttkbootstrap import Style, Window
 from tkinter import ttk
 
 STYLE = Style(theme="superhero")
 WINDOW = STYLE.master
+
+WIDTH = WINDOW.winfo_screenwidth()
+HEIGHT = WINDOW.winfo_screenheight()
+
 NOTEBOOK = ttk.Notebook(WINDOW)
 NOTEBOOK.pack(fill="both")
 
 class App:
-    width = None
-    height = None
     title = ""
+    tabs = {}
 
     def __init__(self, title="App"):
         self.title = title
 
-        self.width = WINDOW.winfo_screenwidth()
-        self.height = WINDOW.winfo_screenheight()
 
-        WINDOW.geometry("%dx%d" % (self.width, self.height))
+        WINDOW.geometry("%dx%d" % (WIDTH, HEIGHT)) 
+
         self.start_app()
 
     def start_app(self):
-        Tab()
+        self.new_tab()
 
         WINDOW.mainloop()
+
+    def new_tab(self):
+        title = f"Tab {len(self.tabs.keys())+1}"
+
+        self.tabs[title] = Tab(title)
 
 class Tab:
     widgets = {}
 
-    def __init__(self):
+    def __init__(self, title):
         self.widgets["main_frame"] = ttk.Frame(NOTEBOOK)
+        self.widgets["table_frame"] = ttk.Frame(self.widgets["main_frame"], width=WIDTH*0.8, height=HEIGHT)
+        self.widgets["option_frame"] = ttk.Frame(self.widgets["main_frame"], width=WIDTH*0.2, height=HEIGHT)
 
         self.widgets["main_frame"].pack(fill="both")
-
-        title = f"Tab {len(self.widgets.keys())}"
+        self.widgets["table_frame"].pack()
+        self.widgets["option_frame"].pack()
 
         NOTEBOOK.add(self.widgets["main_frame"], text=title)
